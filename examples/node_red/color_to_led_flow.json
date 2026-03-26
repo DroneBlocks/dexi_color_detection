@@ -1,0 +1,51 @@
+[
+    {
+        "id": "color_detection_flow",
+        "type": "tab",
+        "label": "Color → LED",
+        "info": "Subscribe to /color_detections and set the LED ring color.\nRequires rosbridge_websocket running on port 9090."
+    },
+    {
+        "id": "ros_sub_color",
+        "type": "ros2-subscriber",
+        "z": "color_detection_flow",
+        "name": "Color Detections",
+        "topic": "/color_detections",
+        "topicType": "dexi_interfaces/msg/ColorDetectionArray",
+        "x": 150,
+        "y": 200,
+        "wires": [["parse_color"]]
+    },
+    {
+        "id": "parse_color",
+        "type": "function",
+        "z": "color_detection_flow",
+        "name": "Pick strongest color",
+        "func": "// msg.payload is the ColorDetectionArray\nconst detections = msg.payload.detections || [];\n\nif (detections.length === 0) {\n    msg.payload = { color: 'white' };\n} else {\n    // First detection is the largest (highest pixel_count)\n    msg.payload = { color: detections[0].color_name };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "x": 380,
+        "y": 200,
+        "wires": [["set_led", "debug_color"]]
+    },
+    {
+        "id": "set_led",
+        "type": "ros2-service-call",
+        "z": "color_detection_flow",
+        "name": "Set LED Ring Color",
+        "service": "/dexi/led_service/set_led_ring_color",
+        "serviceType": "dexi_interfaces/srv/LEDRingColor",
+        "x": 620,
+        "y": 180,
+        "wires": [[]]
+    },
+    {
+        "id": "debug_color",
+        "type": "debug",
+        "z": "color_detection_flow",
+        "name": "Detected Color",
+        "active": true,
+        "x": 610,
+        "y": 240,
+        "wires": []
+    }
+]

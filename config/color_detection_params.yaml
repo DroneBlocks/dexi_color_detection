@@ -1,0 +1,79 @@
+color_detection_node:
+  ros__parameters:
+    # Detection frequency in Hz (higher = more CPU, lower latency)
+    detection_frequency: 5.0
+
+    # Minimum contour area in pixels to count as a detection
+    # Increase to ignore small/noisy detections, decrease for sensitivity
+    min_contour_area: 500
+
+    # Maximum number of detections to publish per frame (across all colors)
+    max_detections: 10
+
+    # Enable annotated image output on /color_detections/image/compressed
+    publish_annotated_image: true
+
+    # JPEG quality for annotated image output (1-100)
+    annotated_jpeg_quality: 75
+
+    # ── Color definitions ──────────────────────────────────────────
+    # Each color has HSV lower/upper bounds, an optional second range
+    # (for colors like red that wrap around the HSV hue space), and
+    # an enabled flag. HSV ranges: H=0-179, S=0-255, V=0-255.
+    #
+    # To add a custom color, follow the same pattern:
+    #   colors.<name>.h_min, h_max, s_min, s_max, v_min, v_max
+    #   colors.<name>.enabled
+    #   colors.<name>.h_min2, h_max2 (optional second hue range)
+
+    colors:
+      red:
+        h_min: 0
+        h_max: 10
+        s_min: 120
+        s_max: 255
+        v_min: 70
+        v_max: 255
+        h_min2: 170
+        h_max2: 179
+        enabled: true
+      orange:
+        h_min: 11
+        h_max: 25
+        s_min: 150
+        s_max: 255
+        v_min: 100
+        v_max: 255
+        enabled: true
+      yellow:
+        h_min: 26
+        h_max: 34
+        s_min: 120
+        s_max: 255
+        v_min: 100
+        v_max: 255
+        enabled: true
+      green:
+        h_min: 35
+        h_max: 85
+        s_min: 60
+        s_max: 255
+        v_min: 50
+        v_max: 255
+        enabled: true
+      blue:
+        h_min: 95
+        h_max: 130
+        s_min: 80
+        s_max: 255
+        v_min: 50
+        v_max: 255
+        enabled: true
+      pink:
+        h_min: 145
+        h_max: 169
+        s_min: 80
+        s_max: 255
+        v_min: 50
+        v_max: 255
+        enabled: true
