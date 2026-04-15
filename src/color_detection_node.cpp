@@ -70,9 +70,9 @@ class ColorDetectionNode : public rclcpp::Node
 public:
   ColorDetectionNode()
   : rclcpp::Node("color_detection_node"),
+    last_detection_time_(0.0),
     frame_count_(0),
-    detection_count_(0),
-    last_detection_time_(0.0)
+    detection_count_(0)
   {
     // ── Top-level parameters ──────────────────────────────────────
     detection_frequency_ = this->declare_parameter<double>("detection_frequency", 5.0);
