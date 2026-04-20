@@ -54,7 +54,7 @@ def generate_launch_description():
 
     color_detection_node = Node(
         package='dexi_color_detection',
-        executable='color_detection_node.py',
+        executable='color_detection_node',
         name='color_detection_node',
         output='screen',
         parameters=[{
