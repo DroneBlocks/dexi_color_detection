@@ -16,6 +16,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
 from dexi_interfaces.msg import ColorDetection as ColorDetectionMsg, ColorDetectionArray
 import cv2
+import math
 import numpy as np
 import time
 
@@ -183,6 +184,19 @@ class ColorDetectionNode(Node):
 
                 x, y, bw, bh = cv2.boundingRect(contour)
 
+                # Principal-axis orientation in image frame.
+                # 0 = vertical line (top-to-bottom), clockwise positive,
+                # normalized to [-pi/2, pi/2] (line direction is 180-deg ambiguous).
+                if len(contour) >= 5:
+                    [vx, vy, _, _] = cv2.fitLine(contour, cv2.DIST_L2, 0, 0.01, 0.01)
+                    orientation_rad = float(math.atan2(float(vx), float(vy)))
+                    if orientation_rad > math.pi / 2:
+                        orientation_rad -= math.pi
+                    elif orientation_rad < -math.pi / 2:
+                        orientation_rad += math.pi
+                else:
+                    orientation_rad = 0.0
+
                 det = ColorDetectionMsg()
                 det.color_name = name
                 det.confidence = min(float(area) / frame_area * 20.0, 1.0)
@@ -195,6 +209,7 @@ class ColorDetectionNode(Node):
                 det.center_x = float(x + bw / 2) / w
                 det.center_y = float(y + bh / 2) / h
                 det.pixel_count = int(area)
+                det.orientation_rad = orientation_rad
                 detections.append(det)
 
                 # Draw annotation on frame
